@@ -3,6 +3,7 @@ import pandas as pd
 from analytics import (
     course_popularity,
     enrollment_by_school,
+    export_analytics_reports,
     generate_summary_report,
     students_by_grade,
 )
@@ -100,6 +101,11 @@ def run_analytics():
     grade_data = students_by_grade()
     course_data = course_popularity()
     summary = generate_summary_report()
+
+    # Export reports
+    reports_dir = export_analytics_reports()
+    if reports_dir:
+        logger.info(f"Report available in: {reports_dir}")
 
     logger.info("Analytics completed!")
     return enrollment_data, grade_data, course_data, summary

@@ -17,6 +17,9 @@ data/
 *.sqlite
 *.sqlite3
 
+# Reports (generated output)
+reports/
+
 # Logs
 logs/
 *.log

@@ -1,7 +1,10 @@
+from datetime import datetime
+import os
+
 import pandas as pd
 
+from config import logger, REPORTS_DIR
 from database import close_connection, create_connection
-from config import logger
 
 
 def enrollment_by_school():
@@ -188,3 +191,40 @@ def generate_summary_report():
             return None
         finally:
             close_connection(conn)
+
+
+def export_analytics_reports():
+    """Export all analytics to CSV files with timestamps"""
+
+    # Create reports directory with timestamp
+    timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+    reports_dir = os.path.join(REPORTS_DIR, timestamp)
+    os.makedirs(reports_dir, exist_ok=True)
+
+    try:
+        # Run analytics and export
+        enrollment_data = enrollment_by_school()
+        grade_data = students_by_grade()
+        course_data = course_popularity()
+
+        # Export to CSV
+        if enrollment_data is not None:
+            enrollment_data.to_csv(
+                f"{reports_dir}/enrollment_by_school.csv", index=False
+            )
+            logger.info(f"Exported enrollment analysis")
+
+        if grade_data is not None:
+            grade_data.to_csv(f"{reports_dir}/students_by_grade.csv", index=False)
+            logger.info(f"Exported grade analysis")
+
+        if course_data is not None:
+            course_data.to_csv(f"{reports_dir}/course_popularity.csv", index=False)
+            logger.info(f"Export course analysis")
+
+        logger.info(f"All reports exported to {reports_dir}/")
+        return reports_dir
+
+    except Exception as e:
+        logger.error(f"Failed to export reports: {e}")
+        return None
