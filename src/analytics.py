@@ -134,23 +134,23 @@ def generate_summary_report():
             # Get top insights
             largest_school = pd.read_sql(
                 """
-                SELECT school_id, COUNT(*) as student_count
-                FROM students
-                GROUP BY school_id
-                ORDER BY student_count DESC
-                LIMIT 1
-            """,
+                    SELECT school_id, COUNT(*) as student_count
+                    FROM students
+                    GROUP BY school_id
+                    ORDER BY student_count DESC
+                    LIMIT 1
+                """,
                 conn,
             )
 
             most_popular_course = pd.read_sql(
                 """
-            SELECT course_name, COUNT(DISTINCT student_id) as enrollment_count
-                FROM enrollments
-                GROUP BY course_name
-                ORDER BY enrollment_count DESC
-                LIMIT 1
-            """,
+                    SELECT course_name, COUNT(DISTINCT student_id) as enrollment_count
+                    FROM enrollments
+                    GROUP BY course_name
+                    ORDER BY enrollment_count DESC
+                    LIMIT 1
+                """,
                 conn,
             )
 
@@ -172,7 +172,7 @@ def generate_summary_report():
                     f"Most Popular Course: {most_popular_course.iloc[0]['course_name']} ({most_popular_course.iloc[0]['enrollment_count']} students)"
                 )
 
-            logger.info("--- End Report ---")
+            logger.info("\n--- End Report ---")
 
             return {
                 "total_students": total_students,
