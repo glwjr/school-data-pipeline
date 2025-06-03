@@ -49,6 +49,18 @@ def create_tables(conn):
         print(f"Failed to create tables in database: {e}")
 
 
+def clear_tables(conn):
+    """Clear all data from tables"""
+    try:
+        print("Clearing existing data...")
+        conn.execute("DELETE FROM enrollments")
+        conn.execute("DELETE FROM students")
+        conn.commit()
+        print("Tables cleared!")
+    except Exception as e:
+        print(f"Failed to clear tables: {e}")
+
+
 def close_connection(conn):
     """Close database connection"""
     if conn:
@@ -56,6 +68,21 @@ def close_connection(conn):
         print("Database connection closed.")
 
 
-conn = create_connection()
-create_tables(conn)
-close_connection(conn)
+def insert_students(conn, students_df):
+    """Insert student data into database"""
+    try:
+        print(f"Inserting {len(students_df)} student records...")
+        students_df.to_sql("students", conn, if_exists="append", index=False)
+        print("Student data inserted successfully!")
+    except Exception as e:
+        print(f"Failed to insert student data: {e}")
+
+
+def insert_enrollments(conn, enrollments_df):
+    """Insert enrollment data into database"""
+    try:
+        print(f"Inserting {len(enrollments_df)} enrollment records...")
+        enrollments_df.to_sql("enrollments", conn, if_exists="append", index=False)
+        print("Enrollment data inserted successfully!")
+    except Exception as e:
+        print(f"Failed to insert enrollment data: {e}")
