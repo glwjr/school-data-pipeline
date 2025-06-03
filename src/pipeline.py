@@ -8,6 +8,7 @@ from database import (
     insert_enrollments,
     insert_students,
 )
+from logging_config import logger
 
 STUDENTS_DATA_PATH = "data/raw/students.csv"
 ENROLLMENTS_DATA_PATH = "data/raw/enrollments.csv"
@@ -15,12 +16,12 @@ ENROLLMENTS_DATA_PATH = "data/raw/enrollments.csv"
 
 def load_students_data():
     """Load students data from CSV to database"""
-    print("Loading students data...")
+    logger.info("Loading students data...")
     df = pd.read_csv(STUDENTS_DATA_PATH)
 
     required_columns = ["student_id", "grade_level", "school_id", "enrollment_date"]
     if not all(col in df.columns for col in required_columns):
-        print("Missing required columns in students data!")
+        logger.error("Missing required columns in students data!")
         return
 
     conn = create_connection()
@@ -31,7 +32,7 @@ def load_students_data():
 
 def load_enrollments_data():
     """Load enrollments data from CSV to database"""
-    print("Loading enrollments data...")
+    logger.info("Loading enrollments data...")
     df = pd.read_csv(ENROLLMENTS_DATA_PATH)
 
     required_columns = [
@@ -42,7 +43,7 @@ def load_enrollments_data():
         "semester",
     ]
     if not all(col in df.columns for col in required_columns):
-        print("Missing required columns in enrollments data!")
+        logger.error("Missing required columns in enrollments data!")
         return
 
     conn = create_connection()
@@ -53,7 +54,7 @@ def load_enrollments_data():
 
 def validate_pipeline():
     """Validate the ETL pipeline results"""
-    print("\n--- Pipeline Validation ---")
+    logger.info("\n--- Pipeline Validation ---")
     conn = create_connection()
     if conn:
         try:
@@ -65,8 +66,8 @@ def validate_pipeline():
                 "SELECT COUNT(*) as count FROM enrollments", conn
             ).iloc[0, 0]
 
-            print(f"✓ Students loaded: {students_count}")
-            print(f"✓ Enrollments loaded: {enrollments_count}")
+            logger.info(f"✓ Students loaded: {students_count}")
+            logger.info(f"✓ Enrollments loaded: {enrollments_count}")
 
             # Check data relationships
             orphaned = pd.read_sql(
@@ -79,17 +80,17 @@ def validate_pipeline():
                 conn,
             ).iloc[0, 0]
 
-            print(f"✓ Orphaned enrollments: {orphaned}")
+            logger.info(f"✓ Orphaned enrollments: {orphaned}")
 
         except Exception as e:
-            print(f"✗ Validation failed: {e}")
+            logger.error(f"✗ Validation failed: {e}")
         finally:
             close_connection(conn)
 
 
 def main():
     """Run the full ETL pipeline"""
-    print("Starting ETL pipeline...")
+    logger.info("Starting ETL pipeline...")
 
     # Set up database
     conn = create_connection()
@@ -105,7 +106,7 @@ def main():
     # Validate results
     validate_pipeline()
 
-    print("ETL pipeline completed!")
+    logger.info("ETL pipeline completed!")
 
 
 if __name__ == "__main__":

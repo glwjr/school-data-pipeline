@@ -1,29 +1,31 @@
 import os
 import sqlite3
 
+from logging_config import logger
+
 DB_PATH = "data/processed/school_data.db"
 
 
 def create_connection():
     """Connect to SQLite database"""
     try:
-        print("Connecting to database...")
+        logger.info("Connecting to database...")
 
         # Ensure directory exists
         os.makedirs(os.path.dirname(DB_PATH), exist_ok=True)
 
         conn = sqlite3.connect(DB_PATH)
-        print("Connected to database!")
+        logger.info("Connected to database!")
         return conn
     except Exception as e:
-        print(f"Failed to connect to database: {e}")
+        logger.error(f"Failed to connect to database: {e}")
         return None
 
 
 def create_tables(conn):
     """Create tables in SQLite database"""
     try:
-        print("Creating tables in database...")
+        logger.info("Creating tables in database...")
         cur = conn.cursor()
         sql = """
             BEGIN;
@@ -44,45 +46,45 @@ def create_tables(conn):
             COMMIT;
         """
         cur.executescript(sql)
-        print("Tables successfully created!")
+        logger.info("Tables successfully created!")
     except Exception as e:
-        print(f"Failed to create tables in database: {e}")
+        logger.error(f"Failed to create tables in database: {e}")
 
 
 def clear_tables(conn):
     """Clear all data from tables"""
     try:
-        print("Clearing existing data...")
+        logger.info("Clearing existing data...")
         conn.execute("DELETE FROM enrollments")
         conn.execute("DELETE FROM students")
         conn.commit()
-        print("Tables cleared!")
+        logger.info("Tables cleared!")
     except Exception as e:
-        print(f"Failed to clear tables: {e}")
+        logger.error(f"Failed to clear tables: {e}")
 
 
 def close_connection(conn):
     """Close database connection"""
     if conn:
         conn.close()
-        print("Database connection closed.")
+        logger.info("Database connection closed.")
 
 
 def insert_students(conn, students_df):
     """Insert student data into database"""
     try:
-        print(f"Inserting {len(students_df)} student records...")
+        logger.info(f"Inserting {len(students_df)} student records...")
         students_df.to_sql("students", conn, if_exists="append", index=False)
-        print("Student data inserted successfully!")
+        logger.info("Student data inserted successfully!")
     except Exception as e:
-        print(f"Failed to insert student data: {e}")
+        logger.error(f"Failed to insert student data: {e}")
 
 
 def insert_enrollments(conn, enrollments_df):
     """Insert enrollment data into database"""
     try:
-        print(f"Inserting {len(enrollments_df)} enrollment records...")
+        logger.info(f"Inserting {len(enrollments_df)} enrollment records...")
         enrollments_df.to_sql("enrollments", conn, if_exists="append", index=False)
-        print("Enrollment data inserted successfully!")
+        logger.info("Enrollment data inserted successfully!")
     except Exception as e:
-        print(f"Failed to insert enrollment data: {e}")
+        logger.error(f"Failed to insert enrollment data: {e}")
