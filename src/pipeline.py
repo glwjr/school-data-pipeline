@@ -14,16 +14,13 @@ from database import (
     insert_enrollments,
     insert_students,
 )
-from logging_config import logger
-
-STUDENTS_DATA_PATH = "data/raw/students.csv"
-ENROLLMENTS_DATA_PATH = "data/raw/enrollments.csv"
+from config import logger, ENROLLMENTS_CSV_PATH, STUDENTS_CSV_PATH
 
 
 def load_students_data():
     """Load students data from CSV to database"""
     logger.info("Loading students data...")
-    df = pd.read_csv(STUDENTS_DATA_PATH)
+    df = pd.read_csv(STUDENTS_CSV_PATH)
 
     required_columns = ["student_id", "grade_level", "school_id", "enrollment_date"]
     if not all(col in df.columns for col in required_columns):
@@ -39,7 +36,7 @@ def load_students_data():
 def load_enrollments_data():
     """Load enrollments data from CSV to database"""
     logger.info("Loading enrollments data...")
-    df = pd.read_csv(ENROLLMENTS_DATA_PATH)
+    df = pd.read_csv(ENROLLMENTS_CSV_PATH)
 
     required_columns = [
         "enrollment_id",

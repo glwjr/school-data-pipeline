@@ -1,9 +1,7 @@
 import os
 import sqlite3
 
-from logging_config import logger
-
-DB_PATH = "data/processed/school_data.db"
+from config import DATABASE_PATH, logger
 
 
 def create_connection():
@@ -12,9 +10,9 @@ def create_connection():
         logger.info("Connecting to database...")
 
         # Ensure directory exists
-        os.makedirs(os.path.dirname(DB_PATH), exist_ok=True)
+        os.makedirs(os.path.dirname(DATABASE_PATH), exist_ok=True)
 
-        conn = sqlite3.connect(DB_PATH)
+        conn = sqlite3.connect(DATABASE_PATH)
         logger.info("Connected to database!")
         return conn
     except Exception as e:

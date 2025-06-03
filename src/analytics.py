@@ -1,7 +1,7 @@
 import pandas as pd
 
 from database import close_connection, create_connection
-from logging_config import logger
+from config import logger
 
 
 def enrollment_by_school():
