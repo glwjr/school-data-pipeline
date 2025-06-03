@@ -1,3 +1,9 @@
+"""Logging configuration for the school data pipeline
+
+Sets up centralized logging with both file and console output.
+Creates timestamped log files in the logs/ directory.
+"""
+
 from datetime import datetime
 import logging
 import os
