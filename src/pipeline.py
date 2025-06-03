@@ -1,12 +1,9 @@
+import os
+
 import pandas as pd
 
-from analytics import (
-    course_popularity,
-    enrollment_by_school,
-    export_analytics_reports,
-    generate_summary_report,
-    students_by_grade,
-)
+from analytics import export_analytics_reports, generate_summary_report
+from config import ENROLLMENTS_CSV_PATH, logger, STUDENTS_CSV_PATH
 from database import (
     clear_tables,
     close_connection,
@@ -15,7 +12,17 @@ from database import (
     insert_enrollments,
     insert_students,
 )
-from config import logger, ENROLLMENTS_CSV_PATH, STUDENTS_CSV_PATH
+from generate_data import generate_mock_data
+
+
+def ensure_data_exists():
+    """Generate sample data if CSV files don't exist"""
+    if not os.path.exists(STUDENTS_CSV_PATH) or not os.path.exists(
+        ENROLLMENTS_CSV_PATH
+    ):
+        logger.info("Data files not found. Generating sample data...")
+        generate_mock_data()
+        logger.info("Sample data generated successfully!")
 
 
 def load_students_data():
@@ -96,11 +103,8 @@ def run_analytics():
     """Run all analytics and generate insights"""
     logger.info("Running data analytics...")
 
-    # Run all analytics
-    enrollment_data = enrollment_by_school()
-    grade_data = students_by_grade()
-    course_data = course_popularity()
-    summary = generate_summary_report()
+    # Generate summary report
+    generate_summary_report()
 
     # Export reports
     reports_dir = export_analytics_reports()
@@ -108,12 +112,14 @@ def run_analytics():
         logger.info(f"Report available in: {reports_dir}")
 
     logger.info("Analytics completed!")
-    return enrollment_data, grade_data, course_data, summary
 
 
 def main():
     """Run the full ETL pipeline"""
     logger.info("Starting ETL pipeline...")
+
+    # Ensure data exists
+    ensure_data_exists()
 
     # Set up database
     conn = create_connection()

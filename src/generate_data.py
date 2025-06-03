@@ -6,6 +6,7 @@ import pandas as pd
 from config import (
     AVAILABLE_COURSES,
     GRADE_LEVELS,
+    logger,
     MAX_COURSES_PER_STUDENT,
     MIN_COURSES_PER_STUDENT,
     NUM_STUDENTS,
@@ -18,7 +19,7 @@ from config import (
 def generate_mock_data():
     """Generate mock education data for pipeline"""
 
-    print("Generating mock student data...")
+    logger.info("Generating mock student data...")
 
     # Students data
     students = pd.DataFrame(
@@ -64,10 +65,10 @@ def generate_mock_data():
     students.to_csv(f"{RAW_DATA_DIR}/students.csv", index=False)
     enrollments_df.to_csv(f"{RAW_DATA_DIR}/enrollments.csv", index=False)
 
-    print("Generated:")
-    print(f"- {len(students)} students")
-    print(f"- {len(enrollments_df)} enrollment records")
-    print(f"Files saved locally to {RAW_DATA_DIR}")
+    logger.info("Generated:")
+    logger.info(f"- {len(students)} students")
+    logger.info(f"- {len(enrollments_df)} enrollment records")
+    logger.info(f"Files saved locally to {RAW_DATA_DIR}")
 
     return students, enrollments_df
 

@@ -29,7 +29,7 @@ def enrollment_by_school():
             # Log the results
             for _, row in result.iterrows():
                 logger.info(
-                    f"School {row['school_id']}: {row['student_count']} students"
+                    f"- School {row['school_id']}: {row['student_count']} students"
                 )
 
             return result
@@ -63,7 +63,7 @@ def students_by_grade():
             # Log the results
             for _, row in result.iterrows():
                 logger.info(
-                    f"Grade {row['grade_level']}: {row['student_count']} students"
+                    f"- Grade {row['grade_level']}: {row['student_count']} students"
                 )
 
             return result
@@ -97,7 +97,7 @@ def course_popularity():
             # Log the results
             for _, row in result.iterrows():
                 logger.info(
-                    f"Course {row['course_name']}: {row['enrollment_count']} students enrolled"
+                    f"- Course {row['course_name']}: {row['enrollment_count']} students enrolled"
                 )
 
             return result
