@@ -1,5 +1,6 @@
 import pandas as pd
 
+from analytics import course_popularity, enrollment_by_school, students_by_grade
 from database import (
     clear_tables,
     close_connection,
@@ -72,11 +73,11 @@ def validate_pipeline():
             # Check data relationships
             orphaned = pd.read_sql(
                 """
-                SELECT COUNT(*) as count 
-                FROM enrollments e 
-                LEFT JOIN students s ON e.student_id = s.student_id 
-                WHERE s.student_id IS NULL
-            """,
+                    SELECT COUNT(*) as count 
+                    FROM enrollments e 
+                    LEFT JOIN students s ON e.student_id = s.student_id 
+                    WHERE s.student_id IS NULL
+                """,
                 conn,
             ).iloc[0, 0]
 
@@ -86,6 +87,19 @@ def validate_pipeline():
             logger.error(f"✗ Validation failed: {e}")
         finally:
             close_connection(conn)
+
+
+def run_analytics():
+    """Run all analytics and generate insights"""
+    logger.info("Running data analytics...")
+
+    # Run all analytics
+    enrollment_data = enrollment_by_school()
+    grade_data = students_by_grade()
+    course_data = course_popularity()
+
+    logger.info("Analytics completed!")
+    return enrollment_data, grade_data, course_data
 
 
 def main():
@@ -105,6 +119,9 @@ def main():
 
     # Validate results
     validate_pipeline()
+
+    # Run analytics
+    run_analytics()
 
     logger.info("ETL pipeline completed!")
 
