@@ -1,6 +1,11 @@
 import pandas as pd
 
-from analytics import course_popularity, enrollment_by_school, students_by_grade
+from analytics import (
+    course_popularity,
+    enrollment_by_school,
+    generate_summary_report,
+    students_by_grade,
+)
 from database import (
     clear_tables,
     close_connection,
@@ -97,9 +102,10 @@ def run_analytics():
     enrollment_data = enrollment_by_school()
     grade_data = students_by_grade()
     course_data = course_popularity()
+    summary = generate_summary_report()
 
     logger.info("Analytics completed!")
-    return enrollment_data, grade_data, course_data
+    return enrollment_data, grade_data, course_data, summary
 
 
 def main():
